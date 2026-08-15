@@ -101,4 +101,4 @@ Chaque vue Angular (Datasets, Modèles ML, Expérimentations) propose :
 
 ## Documentation complémentaire
 
-- [Rapport de projet](./Rapport_et_documentation.pptx) — modèle de données, choix d'architecture, difficultés rencontrées
+- [Rapport de projet](./Rapport_projet.docx) — modèle de données, choix d'architecture, difficultés rencontrées
