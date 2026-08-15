@@ -1,0 +1,102 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="page-header">
+  <h2>Modèles ML</h2>
+  <button pButton type="button" label="Nouveau modèle" icon="pi pi-plus" (click)="openNew()"></button>
+</div>
+
+<p-table
+  [value]="modeles"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  [globalFilterFields]="['nom', 'typeml', 'algorithme']"
+  #dt
+>
+  <ng-template pTemplate="caption">
+    <div class="table-caption">
+      <input
+        pInputText
+        type="text"
+        placeholder="Recherche globale"
+        (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+      />
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+      <th pSortableColumn="typeml">Type <p-sortIcon field="typeml"></p-sortIcon></th>
+      <th pSortableColumn="algorithme">Algorithme <p-sortIcon field="algorithme"></p-sortIcon></th>
+      <th pSortableColumn="version">Version <p-sortIcon field="version"></p-sortIcon></th>
+      <th pSortableColumn="dateCreation">Date de création <p-sortIcon field="dateCreation"></p-sortIcon></th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-modele>
+    <tr>
+      <td>{{ modele.nom }}</td>
+      <td>{{ modele.typeml }}</td>
+      <td>{{ modele.algorithme }}</td>
+      <td>{{ modele.version }}</td>
+      <td>{{ modele.dateCreation | date: 'dd/MM/yyyy' }}</td>
+      <td class="actions">
+        <button pButton icon="pi pi-pencil" class="p-button-text" (click)="edit(modele)"></button>
+        <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="confirmDelete(modele)"></button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6">Aucun modèle trouvé.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{ width: '32rem' }"
+  [header]="editMode ? 'Modifier le modèle' : 'Nouveau modèle'"
+>
+  <form [formGroup]="form" class="p-fluid dialog-form">
+    <div class="field">
+      <label for="nom">Nom</label>
+      <input pInputText id="nom" formControlName="nom" />
+      <small class="p-error" *ngIf="form.get('nom')?.touched && form.get('nom')?.invalid">Le nom est requis.</small>
+    </div>
+
+    <div class="field">
+      <label for="typeml">Type</label>
+      <p-dropdown inputId="typeml" [options]="types" formControlName="typeml" placeholder="Choisir un type"></p-dropdown>
+      <small class="p-error" *ngIf="form.get('typeml')?.touched && form.get('typeml')?.invalid">Le type est requis.</small>
+    </div>
+
+    <div class="field">
+      <label for="algorithme">Algorithme</label>
+      <input pInputText id="algorithme" formControlName="algorithme" />
+      <small class="p-error" *ngIf="form.get('algorithme')?.touched && form.get('algorithme')?.invalid">L'algorithme est requis.</small>
+    </div>
+
+    <div class="field">
+      <label for="version">Version</label>
+      <p-inputNumber inputId="version" formControlName="version" [min]="0"></p-inputNumber>
+      <small class="p-error" *ngIf="form.get('version')?.touched && form.get('version')?.invalid">Valeur positive requise.</small>
+    </div>
+
+    <div class="field">
+      <label for="dateCreation">Date de création</label>
+      <p-calendar inputId="dateCreation" formControlName="dateCreation" dateFormat="dd/mm/yy"></p-calendar>
+      <small class="p-error" *ngIf="form.get('dateCreation')?.touched && form.get('dateCreation')?.invalid">La date est requise.</small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Annuler" class="p-button-text" (click)="dialogVisible = false"></button>
+    <button pButton label="Enregistrer" icon="pi pi-check" (click)="save()"></button>
+  </ng-template>
+</p-dialog>

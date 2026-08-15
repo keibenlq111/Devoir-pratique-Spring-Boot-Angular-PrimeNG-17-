@@ -1,0 +1,28 @@
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.table-caption {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.dialog-form .field {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dialog-form label {
+  font-weight: 600;
+}

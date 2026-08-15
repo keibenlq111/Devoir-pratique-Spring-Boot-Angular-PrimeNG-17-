@@ -1,0 +1,8 @@
+# Autres projets non liés à ce devoir
+/demo/
+/project2tp30_05/
+/testpro/
+
+# Archives de sauvegarde locales
+*.7z
+datasetsMachineLearning/.claude/

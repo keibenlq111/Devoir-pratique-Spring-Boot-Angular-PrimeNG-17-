@@ -1,0 +1,124 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
+<div class="page-header">
+  <h2>Expérimentations</h2>
+  <button pButton type="button" label="Nouvelle expérimentation" icon="pi pi-plus" (click)="openNew()"></button>
+</div>
+
+<p-table
+  [value]="experimentations"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  [globalFilterFields]="['datasetNom', 'modeleNom']"
+  #dt
+>
+  <ng-template pTemplate="caption">
+    <div class="table-caption">
+      <input
+        pInputText
+        type="text"
+        placeholder="Recherche globale"
+        (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+      />
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="datasetNom">Dataset <p-sortIcon field="datasetNom"></p-sortIcon></th>
+      <th pSortableColumn="modeleNom">Modèle <p-sortIcon field="modeleNom"></p-sortIcon></th>
+      <th pSortableColumn="accuracy">Accuracy <p-sortIcon field="accuracy"></p-sortIcon></th>
+      <th pSortableColumn="f1Score">F1 Score <p-sortIcon field="f1Score"></p-sortIcon></th>
+      <th pSortableColumn="dureeEntrainement">Durée (s) <p-sortIcon field="dureeEntrainement"></p-sortIcon></th>
+      <th pSortableColumn="dateExecution">Date d'exécution <p-sortIcon field="dateExecution"></p-sortIcon></th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-experimentation>
+    <tr>
+      <td>{{ experimentation.datasetNom }}</td>
+      <td>{{ experimentation.modeleNom }}</td>
+      <td>{{ experimentation.accuracy }}</td>
+      <td>{{ experimentation.f1Score }}</td>
+      <td>{{ experimentation.dureeEntrainement }}</td>
+      <td>{{ experimentation.dateExecution | date: 'dd/MM/yyyy' }}</td>
+      <td class="actions">
+        <button pButton icon="pi pi-pencil" class="p-button-text" (click)="edit(experimentation)"></button>
+        <button pButton icon="pi pi-trash" class="p-button-text p-button-danger" (click)="confirmDelete(experimentation)"></button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="7">Aucune expérimentation trouvée.</td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog
+  [(visible)]="dialogVisible"
+  [modal]="true"
+  [style]="{ width: '32rem' }"
+  [header]="editMode ? 'Modifier l\'expérimentation' : 'Nouvelle expérimentation'"
+>
+  <form [formGroup]="form" class="p-fluid dialog-form">
+    <div class="field">
+      <label for="datasetId">Dataset</label>
+      <p-dropdown
+        inputId="datasetId"
+        [options]="datasets"
+        optionLabel="nom"
+        optionValue="id"
+        formControlName="datasetId"
+        placeholder="Choisir un dataset"
+      ></p-dropdown>
+      <small class="p-error" *ngIf="form.get('datasetId')?.touched && form.get('datasetId')?.invalid">Le dataset est requis.</small>
+    </div>
+
+    <div class="field">
+      <label for="modeleId">Modèle</label>
+      <p-dropdown
+        inputId="modeleId"
+        [options]="modeles"
+        optionLabel="nom"
+        optionValue="id"
+        formControlName="modeleId"
+        placeholder="Choisir un modèle"
+      ></p-dropdown>
+      <small class="p-error" *ngIf="form.get('modeleId')?.touched && form.get('modeleId')?.invalid">Le modèle est requis.</small>
+    </div>
+
+    <div class="field">
+      <label for="accuracy">Accuracy (0-1)</label>
+      <p-inputNumber inputId="accuracy" formControlName="accuracy" [min]="0" [max]="1" [minFractionDigits]="0" [maxFractionDigits]="4"></p-inputNumber>
+      <small class="p-error" *ngIf="form.get('accuracy')?.touched && form.get('accuracy')?.invalid">Valeur entre 0 et 1 requise.</small>
+    </div>
+
+    <div class="field">
+      <label for="f1Score">F1 Score (0-1)</label>
+      <p-inputNumber inputId="f1Score" formControlName="f1Score" [min]="0" [max]="1" [minFractionDigits]="0" [maxFractionDigits]="4"></p-inputNumber>
+      <small class="p-error" *ngIf="form.get('f1Score')?.touched && form.get('f1Score')?.invalid">Valeur entre 0 et 1 requise.</small>
+    </div>
+
+    <div class="field">
+      <label for="dureeEntrainement">Durée d'entraînement (secondes)</label>
+      <p-inputNumber inputId="dureeEntrainement" formControlName="dureeEntrainement" [min]="0"></p-inputNumber>
+      <small class="p-error" *ngIf="form.get('dureeEntrainement')?.touched && form.get('dureeEntrainement')?.invalid">Valeur positive requise.</small>
+    </div>
+
+    <div class="field">
+      <label for="dateExecution">Date d'exécution</label>
+      <p-calendar inputId="dateExecution" formControlName="dateExecution" dateFormat="dd/mm/yy"></p-calendar>
+      <small class="p-error" *ngIf="form.get('dateExecution')?.touched && form.get('dateExecution')?.invalid">La date est requise.</small>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button pButton label="Annuler" class="p-button-text" (click)="dialogVisible = false"></button>
+    <button pButton label="Enregistrer" icon="pi pi-check" (click)="save()"></button>
+  </ng-template>
+</p-dialog>
